@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Culinária Divertida da Rota Rural Mercedes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Baloo 2', cursive;
+      margin: 0;
+      padding: 0;
+      background-color: #fdf6e3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+    .game-container {
+      background-color: #ffcc80;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      animation: bounceIn 1s ease-out;
+    }
+    .recipe-card {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+    .recipe-card img {
+      width: 100%;
+      border-radius: 10px;
+      height: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .recipe-card h2 {
+      font-size: 2.5em;
+      color: #ff6f61;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .recipe-card p {
+      font-size: 1.2em;
+      color: #5d4037;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    .btn {
+      background-color: #ffeb3b;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      margin-top: 20px;
+    }
+    .btn:hover {
+      background-color: #fbc02d;
+      transform: scale(1.1);
+    }
+    .btn:active {
+      transform: scale(1);
+    }
+    @keyframes bounceIn {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .chef-image {
+      width: 150px;
+      margin-top: 20px;
+      animation: bounceIn 1.5s ease-out;
+    }
+    #star-rating {
+      font-size: 1.5em;
+      color: #ffeb3b;
+    }
+    .character {
+      width: 100px;
+      margin-top: 20px;
+      animation: bounceIn 1.5s ease-out;
+    }
+    .game-container:hover .recipe-card {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <div class="recipe-card">
+      <h2>Prato Típico: Churrasco de Costela</h2>
+      <img src="img/churrasco.jpg" alt="Churrasco de Costela">
+      <p><strong>Ingredientes:</strong> Costela de boi, sal grosso, alho, pimenta do reino, azeite.</p>
+      <p><strong>Modo de preparo:</strong> Tempere a costela com sal grosso, pimenta e alho. Deixe marinar por 1 hora. Coloque na grelha e asse por 3 horas.</p>
+      <button class="btn" onclick="nextRecipe()">Próximo Prato!</button>
+    </div>
+
+    <div id="star-rating"></div>
+
+    <img class="chef-image" src="img/chef.png" alt="Chef Zé" />
+
+    <p id="chef-comment">"Hmm, esse churrasco vai ficar uma delícia! Vamos para o próximo prato!"</p>
+
+    <img class="character" src="img/chef-zinha.png" alt="Chef Zinha" />
+  </div>
+
+  <audio id="success-sound" src="audio/success.mp3"></audio>
+  <audio id="error-sound" src="audio/error.mp3"></audio>
+
+  <script>
+    let recipes = [
+      {
+        name: "Churrasco de Costela",
+        ingredients: "Costela de boi, sal grosso, alho, pimenta do reino, azeite.",
+        preparation: "Tempere a costela com sal grosso, pimenta e alho. Deixe marinar por 1 hora. Coloque na grelha e asse por 3 horas.",
+        img: "img/churrasco.jpg",
+        comment: "Hmm, esse churrasco vai ficar uma delícia! Vamos para o próximo prato!",
+        rating: 5
+      },
+      {
+        name: "Cuca de Maçã",
+        ingredients: "Maçãs, farinha de trigo, açúcar, manteiga, ovos, leite.",
+        preparation: "Misture todos os ingredientes e coloque as maçãs cortadas por cima. Asse por 40 minutos.",
+        img: "img/cuca.jpg",
+        comment: "Delícia! Agora vamos fazer uma sobremesa incrível! 🍏",
+        rating: 4
+      },
+      {
+        name: "Bolo de Fubá",
+        ingredients: "Farinha de fubá, ovos, leite, açúcar, fermento.",
+        preparation: "Misture todos os ingredientes e asse por 40 minutos até dourar.",
+        img: "img/bolo.jpg",
+        comment: "Hummm, um bolo quentinho saindo do forno! 😋",
+        rating: 5
+      },
+      {
+        name: "Arroz de Carreteiro",
+        ingredients: "Arroz, carne de charque, alho, cebola, pimentão.",
+        preparation: "Cozinhe o arroz e misture com a carne de charque desfiada. Sirva quentinho!",
+        img: "img/arroz-carreteiro.jpg",
+        comment: "Esse prato é perfeito para a família! 🍚🍖",
+        rating: 4
+      },
+      {
+        name: "Pão de Queijo",
+        ingredients: "Polvilho, queijo, leite, ovos, manteiga.",
+        preparation: "Misture todos os ingredientes e modele os pães. Asse até dourar.",
+        img: "img/pao-de-queijo.jpg",
+        comment: "Pão de queijo quentinho! Perfeito para o lanche da tarde! 🧀",
+        rating: 5
+      }
+    ];
+
+    let currentRecipe = 0;
+
+    // Função para tocar som de sucesso
+    function playSuccessSound() {
+      document.getElementById("success-sound").play();
+    }
+
+    // Função para tocar som de erro
+    function playErrorSound() {
+      document.getElementById("error-sound").play();
+    }
+
+    // Função para mudar para a próxima receita
+    function nextRecipe() {
+      currentRecipe++;
+      if (currentRecipe >= recipes.length) {
+        alert("Você completou todas as receitas! Que tal tentar de novo?");
+        currentRecipe = 0; // Reinicia o jogo
+      }
+      loadRecipe();
+      playSuccessSound();
+    }
+
+    // Função para carregar as receitas
+    function loadRecipe() {
+      let recipe = recipes[currentRecipe];
+      document.querySelector("h2").textContent = recipe.name;
+      document.querySelector("img").src = recipe.img;
+      document.querySelector("p").textContent = `Ingredientes: ${recipe.ingredients}\nModo de preparo: ${recipe.preparation}`;
+      document.querySelector("button").textContent = "Próximo Prato!";
+      document.querySelector("#chef-comment").textContent = recipe.comment;
+
+      // Exibindo o rating (estrela)
+      let stars = '';
+      for (let i = 0; i < recipe.rating; i++) {
+        stars += '⭐';
+      }
+      document.getElementById("star-rating").innerHTML = `Avaliação: ${stars}`;
+    }
+
+    // Carregar a primeira receita ao carregar a página
+    window.onload = loadRecipe;
+  </script>
+
+</body>
+</html>

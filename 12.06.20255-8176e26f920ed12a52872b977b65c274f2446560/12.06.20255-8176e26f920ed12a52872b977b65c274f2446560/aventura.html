@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventura na Rota Rural</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e1e1e1;
+      overflow: hidden;
+    }
+    #gameCanvas {
+      background-color: #78c2ad;
+      display: block;
+      margin: 0 auto;
+      border: 5px solid #2f4f3a;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 24px;
+      color: #fff;
+    }
+    #startButton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      padding: 15px 30px;
+      background-color: #558b2f;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    #startButton:hover {
+      background-color: #4a6b3d;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="startButton" onclick="startGame()">Começar a Corrida</button>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="score">Pontuação: 0</div>
+
+  <script>
+    let canvas = document.getElementById("gameCanvas");
+    let ctx = canvas.getContext("2d");
+    let car = { x: 350, y: 500, width: 50, height: 100, speed: 5 };
+    let obstacles = [];
+    let score = 0;
+    let gameInterval;
+
+    // Função para iniciar o jogo
+    function startGame() {
+      document.getElementById("startButton").style.display = "none"; // Esconde o botão
+      gameInterval = setInterval(gameLoop, 1000 / 60); // Atualiza a cada 60 quadros
+      spawnObstacle();
+    }
+
+    // Função para gerar obstáculos
+    function spawnObstacle() {
+      let obstacle = {
+        x: Math.random() * (canvas.width - 50),
+        y: -100,
+        width: 50,
+        height: 100,
+        speed: 3 + Math.random() * 3,
+      };
+      obstacles.push(obstacle);
+    }
+
+    // Função para desenhar o carro e obstáculos
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#2f4f3a";
+      ctx.fillRect(car.x, car.y, car.width, car.height);
+
+      // Desenhar obstáculos
+      for (let obstacle of obstacles) {
+        ctx.fillStyle = "#ff5733";
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      }
+
+      // Desenhar a pontuação
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "#fff";
+      ctx.fillText("Pontuação: " + score, 20, 30);
+    }
+
+    // Função para atualizar a posição do carro
+    function updateCarPosition(event) {
+      if (event.key === "ArrowRight" && car.x < canvas.width - car.width) {
+        car.x += car.speed;
+      }
+      if (event.key === "ArrowLeft" && car.x > 0) {
+        car.x -= car.speed;
+      }
+    }
+
+    // Função para atualizar o estado do jogo
+    function gameLoop() {
+      draw();
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].y += obstacles[i].speed;
+        if (obstacles[i].y > canvas.height) {
+          obstacles.splice(i, 1);
+          score++;
+        }
+
+        // Checando colisão com o carro
+        if (collisionDetected(car, obstacles[i])) {
+          clearInterval(gameInterval);
+          alert("Game Over! Sua pontuação final foi: " + score);
+        }
+      }
+      if (Math.random() < 0.02) spawnObstacle(); // Chance de gerar um novo obstáculo a cada loop
+    }
+
+    // Função de colisão
+    function collisionDetected(car, obstacle) {
+      return car.x < obstacle.x + obstacle.width &&
+             car.x + car.width > obstacle.x &&
+             car.y < obstacle.y + obstacle.height &&
+             car.y + car.height > obstacle.y;
+    }
+
+    // Iniciar o jogo com as teclas de direção
+    window.addEventListener("keydown", updateCarPosition);
+  </script>
+</body>
+</html>
